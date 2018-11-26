@@ -34,6 +34,24 @@ resource "aws_subnet" "default" {
   vpc_id                    = "${aws_vpc.default.id}"
   cidr_block                = "10.10.1.0/24"
   map_public_ip_on_launch   = true
+  tags {
+    Name = "sdunne-sub1"
+  }
+}
+
+# Grant the VPC internet access on its main route table
+resource "aws_route" "internet_access" {
+  route_table_id         = "${aws_vpc.default.main_route_table_id}"
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = "${aws_internet_gateway.default.id}"
+}
+
+# Create an internet gateway to give our subnet access to the outside world
+resource "aws_internet_gateway" "default" {
+  vpc_id = "${aws_vpc.default.id}"
+  tags {
+    Name = "sdunne-igw1"
+  }
 }
 
 resource "aws_security_group" "access" {
@@ -65,10 +83,10 @@ resource "aws_instance" "example" {
 
   subnet_id = "${aws_subnet.default.id}"
 
-  #vpc_security_group_ids = ["${aws_security_group.access.id}"]
+  vpc_security_group_ids = ["${aws_security_group.access.id}"]
 
   tags {
     Owner = "sdunne@redhat.com"
-    Name = "sdunne-test1"
+    Name = "sdunne-bastion1"
   }
 }
