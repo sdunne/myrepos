@@ -7,8 +7,11 @@
     splunk_exec: /opt/splunkforwarder/bin/splunk
     cloud_cred_loc: /tmp/splunkclouduf.spl
     splunk_user: admin
-    #splunk_password: <better off in secrets, right?
+    #splunk_password: <better off in secrets, right?>
     splunk_home: /opt/splunkforwarder
+    splunk_monitors:
+      - /var/log/messages
+      - /var/log/httpd
 
   vars_files:
    - secret.yml
@@ -45,12 +48,13 @@
       ignore_errors: yes
       notify: restart splunk service
 
-    - name: install splunk monitor /var/log/messages 
-      command: "{{splunk_exec}} add monitor /var/log/messages"
+    - name: install splunk monitors
+      command: "{{splunk_exec}} add monitor {{item}}"
       ignore_errors: yes
+      loop: "{{splunk_monitors}}"
       notify: restart splunk service
+      tags: monitors
 
   handlers:
     - name: restart splunk service
       command: "{{splunk_exec}} restart"
-

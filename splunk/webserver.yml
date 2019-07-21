@@ -1,0 +1,46 @@
+---
+- name: install apache web server with content
+  hosts: servers
+  become: yes
+  vars:
+    apache_test_message: Hello FAA at OKC
+    apache_max_keep_alive_requests: 115
+#  vars_files:
+
+  tasks:
+    - name: install apache
+      yum:
+        name: httpd
+        state: present
+
+    - name: latest httpd.conf is present
+      template:
+        src: templates/httpd.conf.j2
+        dest: /etc/httpd/conf/httpd.conf
+      notify: restart apache service
+
+    - name: latest index.html is present
+      template:
+        src: templates/index.html.j2
+        dest: /var/www/html/index.html
+
+    - name: httpd is started and enabled
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: firewall port for http are open
+      firewalld:
+        service: http
+        immediate: true
+        permanent: true
+        state: enabled
+
+  handlers:
+    - name: restart apache service
+      service:
+        name: httpd
+        state: restarted
+        enabled: yes
+
