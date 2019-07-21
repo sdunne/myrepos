@@ -1,6 +1,6 @@
 ---
 - name: install splunk universal forwarder
-  hosts: servers
+  hosts: ec2 
   become: yes
   vars:
     forwarder: splunkforwarder-7.3.0-657388c7a488-linux-2.6-x86_64.rpm

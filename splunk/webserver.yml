@@ -1,6 +1,6 @@
 ---
 - name: install apache web server with content
-  hosts: servers
+  hosts: ec2 
   become: yes
   vars:
     apache_test_message: Hello FAA at OKC
@@ -12,6 +12,17 @@
       yum:
         name: httpd
         state: present
+
+    - name: install firewalld
+      yum:
+        name: firewalld
+        state: present
+
+    - name: start and enable firewalld
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
 
     - name: latest httpd.conf is present
       template:
