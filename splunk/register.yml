@@ -1,0 +1,32 @@
+---
+- name: register new server
+  hosts: servers
+  become: yes
+  vars:
+    hostname: rhel8-test4
+    
+  vars_files:
+    - secret.yml
+
+  tasks:
+    - name: change hostname
+      hostname:
+        name: "{{hostname}}"
+      
+    - name: subscribe to rhsm
+      redhat_subscription:
+        state: present
+        username: "{{rhsm_username}}" 
+        password: "{{rhsm_password}}" 
+        auto_attach: no
+        pool_ids: "{{ pool_id_employee_sku }}" 
+
+    - name: install useful packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - vim
+        - nc
+        - wget
+

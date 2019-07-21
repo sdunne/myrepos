@@ -1,0 +1,56 @@
+---
+- name: install splunk universal forwarder
+  hosts: servers
+  become: yes
+  vars:
+    forwarder: splunkforwarder-7.3.0-657388c7a488-linux-2.6-x86_64.rpm
+    splunk_exec: /opt/splunkforwarder/bin/splunk
+    cloud_cred_loc: /tmp/splunkclouduf.spl
+    splunk_user: admin
+    #splunk_password: <better off in secrets, right?
+    splunk_home: /opt/splunkforwarder
+
+  vars_files:
+   - secret.yml
+
+  tasks:
+    - name: universal forwarder rpm
+      copy:
+        src: files/{{forwarder}}
+        dest: /tmp/
+
+    - name: install universal forwarder rpm
+      yum:
+        name: /tmp/{{forwarder}}
+        state: present
+
+    - name: add splunk credentials files for admin
+      copy:
+        dest: "{{splunk_home}}/etc/system/local/user-seed.conf"
+        content: |
+          [user_info]
+          USERNAME = admin
+          PASSWORD = {{splunk_password}}
+
+    - name: start splunk service
+      command: "{{splunk_exec}} start --accept-license"
+
+    - name: add splunk cloud credential
+      copy: 
+        src: files/splunkclouduf.spl 
+        dest: "{{cloud_cred_loc}}"
+
+    - name: install splunk cloud credential
+      command: "{{splunk_exec}} install app {{cloud_cred_loc}} -auth admin:{{splunk_password}}"
+      ignore_errors: yes
+      notify: restart splunk service
+
+    - name: install splunk monitor /var/log/messages 
+      command: "{{splunk_exec}} add monitor /var/log/messages"
+      ignore_errors: yes
+      notify: restart splunk service
+
+  handlers:
+    - name: restart splunk service
+      command: "{{splunk_exec}} restart"
+

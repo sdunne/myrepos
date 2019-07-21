@@ -1,0 +1,26 @@
+---
+- name: remove splunk
+  hosts: servers
+  become: yes
+
+  tasks:
+    - name: stop splunk service
+      command: "/opt/splunkforwarder/bin/splunk stop"
+      ignore_errors: yes
+
+    - name: remove splunk rpm
+      yum:
+        name: splunkforwarder
+        state: absent
+
+    - name: remove all splunk files
+      file:
+        path: /opt/splunkforwarder
+        state: absent
+
+    - name: remove cloud credentials
+      file:
+        path: /tmp/splunkclouduf.spl
+        state: absent
+
+
