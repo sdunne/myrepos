@@ -1,9 +1,10 @@
 ---
 - name: install splunk universal forwarder
-  hosts: ec2 
+  hosts: servers
   become: yes
   vars:
-    forwarder: splunkforwarder-7.3.0-657388c7a488-linux-2.6-x86_64.rpm
+#    forwarder: splunkforwarder-7.3.0-657388c7a488-linux-2.6-x86_64.rpm
+    forwarder: splunkforwarder-7.3.1-bd63e13aa157-linux-2.6-x86_64.rpm
     splunk_exec: /opt/splunkforwarder/bin/splunk
     cloud_cred_loc: /tmp/splunkclouduf.spl
     splunk_user: admin

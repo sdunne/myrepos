@@ -1,9 +1,9 @@
 ---
 - name: register new server
-  hosts: servers
+  hosts: splunk
   become: yes
   vars:
-    hostname: rhel8-test4
+    hostname: rhel8-splunk.sdunne.local
     
   vars_files:
     - secret.yml

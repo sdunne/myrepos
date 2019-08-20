@@ -1,11 +1,10 @@
 ---
 - name: install apache web server with content
-  hosts: ec2 
+  hosts: servers
   become: yes
   vars:
-    apache_test_message: Hello FAA at OKC
+    apache_test_message: Hello JSC 
     apache_max_keep_alive_requests: 115
-#  vars_files:
 
   tasks:
     - name: install apache

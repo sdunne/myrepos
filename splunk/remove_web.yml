@@ -1,0 +1,36 @@
+---
+- name: remove apache web server with content
+  hosts: servers
+  become: yes
+
+  tasks:
+    - name: httpd is stopped
+      service:
+        name: httpd
+        state: stopped
+      ignore_errors: true
+
+    - name: remove apache
+      yum:
+        name: httpd
+        state: absent
+      ignore_errors: true
+
+    - name: remove httpd.conf
+      file:
+        path: /etc/httpd/conf/httpd.conf
+        state: absent
+
+    - name: remove index.html
+      file:
+        path: /var/www/html/index.html
+        state: absent
+
+    - name: firewall port for http are open
+      firewalld:
+        service: http
+        permanent: true
+        immediate: true
+        state: disabled
+
+
