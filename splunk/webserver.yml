@@ -1,6 +1,6 @@
 ---
 - name: install apache web server with content
-  hosts: servers
+  hosts: all
   become: yes
   vars:
     apache_test_message: Hello JSC 
