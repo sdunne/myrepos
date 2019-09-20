@@ -1,0 +1,45 @@
+---
+- hosts: all
+#  name: This is a play within a playbook
+  become: yes
+  vars:
+    httpd_packages:
+      - httpd
+#      - mod_wsgi
+#    apache_test_message: Hello FAA
+#    apache_max_keep_alive_requests: 115
+
+  tasks:
+    - name: httpd packages are present
+      package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ httpd_packages }}"
+      notify: restart apache service
+
+    - name: latest index.html is present
+      template:
+        src: files/index.html
+        dest: /var/www/html/index.html
+
+    - name: httpd is started and enabled
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: open ports in firewall
+      firewalld:
+        service: http
+        immediate: true
+        permanent: true
+        state: enabled
+      tags: firewall
+
+  handlers:
+    - name: restart apache service
+      service:
+        name: httpd
+        state: restarted
+        enabled: yes
+

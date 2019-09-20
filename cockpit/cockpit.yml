@@ -1,0 +1,25 @@
+---
+- hosts: all
+  name: install and configure cockpit to run
+  become: yes
+  vars:
+
+  tasks:
+    - name: cockpit packages are present
+      package:
+        name: cockpit
+        state: latest
+
+    - name: cockpit is started and enabled
+      service:
+        name: cockpit.socket
+        state: started
+        enabled: yes
+
+    - name: open ports in firewall
+      firewalld:
+        port: 9090/tcp
+        immediate: true
+        permanent: true
+        state: enabled
+

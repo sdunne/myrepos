@@ -1,0 +1,9 @@
+# vars for playbook
+
+#    instance_type: "ami-0af6f794ec2d5ff13" #rhel7 imported
+instance_type: "ami-011b3ccf1bd6db744" #rhel76 from aws
+key_name: "sd2rh"
+public_subnet_id: subnet-0e412cca60ccd15b7 #sdunne-sub1
+security_group: sdunne-sg-default
+
+aws_region: "us-east-1"

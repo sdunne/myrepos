@@ -1,0 +1,17 @@
+---
+- name: check for file in /tmp
+  hosts: localhost
+
+  vars:
+    - text: "this is the original text."
+
+  tasks:
+    - name: copy file to /tmp
+      template:
+        src: file.j2
+        dest: /tmp/file
+        owner: sdunne
+        group: sdunne
+        mode: 0644
+
+

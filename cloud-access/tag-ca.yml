@@ -1,0 +1,35 @@
+---
+- name: tag instances that are cloud access
+  hosts: ca 
+  vars:
+    ansible_ssh_private_key_file: ~/.ssh/keys/sdunne3.pem
+
+  tasks:
+    - name: run command to view metadata
+      uri:
+        url: http://169.254.169.254/latest/dynamic/instance-identity/document
+        return_content: yes
+      register: content
+
+    - debug: var=content
+
+    - name: gather ec2 info
+      connection: local
+      ec2_instance_facts:
+        region: us-east-2
+        aws_access_key: AKIAIG2EPUMVFDMTVWVQ
+        aws_secret_key: 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
+        #public_ip_address: "{{ansible_facts.ansible_all_ipv4_addressses}}"
+        #filters:
+          #public_ip_address: 172.31.38.64 
+      register: ec2_info
+
+    - debug: var=ec2_info.instances[0].instance_id
+
+    - debug:
+        msg: "This is the instance_id: {{ec2_info.instances.instanceId}}"
+#    - name: add ec2 tag if instance is Cloud Access
+#      ec2_tag:
+#        state: present
+#        tags:
+#          CloudAccess: yes

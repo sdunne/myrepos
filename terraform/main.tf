@@ -33,7 +33,7 @@ resource "aws_vpc" "default" {
 resource "aws_subnet" "default" {
   vpc_id                    = "${aws_vpc.default.id}"
   cidr_block                = "10.10.1.0/24"
-  map_public_ip_on_launch   = true
+  map_public_ip_on_launch   = false
   tags {
     Name = "sdunne-sub1"
   }
@@ -75,7 +75,25 @@ resource "aws_security_group" "access" {
   }
 }
 
-resource "aws_instance" "example" {
+resource "aws_instance" "bastion1" {
+  ami           = "ami-0af6f794ec2d5ff13"
+  instance_type = "t2.small"
+
+  key_name  = "${var.key_name}"
+
+  subnet_id = "${aws_subnet.default.id}"
+
+  associate_public_ip_address = true
+
+  vpc_security_group_ids = ["${aws_security_group.access.id}"]
+
+  tags {
+    Owner = "sdunne@redhat.com"
+    Name = "sdunne-bastion1"
+  }
+}
+
+resource "aws_instance" "master1" {
   ami           = "ami-0af6f794ec2d5ff13"
   instance_type = "t2.small"
 
@@ -87,6 +105,54 @@ resource "aws_instance" "example" {
 
   tags {
     Owner = "sdunne@redhat.com"
-    Name = "sdunne-bastion1"
+    Name = "sdunne-master1"
+  }
+}
+
+resource "aws_instance" "infra1" {
+  ami           = "ami-0af6f794ec2d5ff13"
+  instance_type = "t2.small"
+
+  key_name  = "${var.key_name}"
+
+  subnet_id = "${aws_subnet.default.id}"
+
+  vpc_security_group_ids = ["${aws_security_group.access.id}"]
+
+  tags {
+    Owner = "sdunne@redhat.com"
+    Name = "sdunne-infra1"
+  }
+}
+
+resource "aws_instance" "app1" {
+  ami           = "ami-0af6f794ec2d5ff13"
+  instance_type = "t2.small"
+
+  key_name  = "${var.key_name}"
+
+  subnet_id = "${aws_subnet.default.id}"
+
+  vpc_security_group_ids = ["${aws_security_group.access.id}"]
+
+  tags {
+    Owner = "sdunne@redhat.com"
+    Name = "sdunne-app1"
+  }
+}
+
+resource "aws_instance" "app2" {
+  ami           = "ami-0af6f794ec2d5ff13"
+  instance_type = "t2.small"
+
+  key_name  = "${var.key_name}"
+
+  subnet_id = "${aws_subnet.default.id}"
+
+  vpc_security_group_ids = ["${aws_security_group.access.id}"]
+
+  tags {
+    Owner = "sdunne@redhat.com"
+    Name = "sdunne-app2"
   }
 }

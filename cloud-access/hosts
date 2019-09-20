@@ -1,0 +1,4 @@
+[servers]
+ca	ansible_host=ec2-3-17-37-204.us-east-2.compute.amazonaws.com
+od	ansible_host=ec2-18-223-21-141.us-east-2.compute.amazonaws.com
+

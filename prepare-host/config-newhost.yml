@@ -1,0 +1,21 @@
+---
+- name: configure newhost for mgmt by ansible
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: add ansible user
+      user:
+        name: ansible
+        password: $6$y5mnphxcXdPn1/pz$lrpodhH2FUfQKIim1t7ASgY89VRzy6xnygptzkQATuiTblb3DqO34OKlLBXVkoSKuoMTyqtE9t4BoTxn2h6GN/ 
+        groups: wheel
+        state: present
+#        ssh_key_file: files/ansible2.pub
+
+#    - name: add ssh key for ansible user
+#      authorized_key:
+#        user: ansible
+#        key: files/ansible2.pub
+ 
+# manually did ssh-copy-id and manually edited /etc/sudoers
+#

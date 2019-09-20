@@ -1,0 +1,14 @@
+- name: Public key is deployed to managed hosts for Ansible
+  hosts: all
+
+  tasks:
+    - name: Ensure key is in root's ~/.ssh/authorized_hosts
+      authorized_key:
+        user: root
+        state: present
+        key: '{{ item }}'
+      with_file:
+        - ~/.ssh/id_rsa.pub
+
+# also add file in /etc/sudoers.d with this info: devops ALL=(ALL) NOPASSWD: ALL
+# if desired

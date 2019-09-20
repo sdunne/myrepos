@@ -1,0 +1,31 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    instance_type: "ami-0af6f794ec2d5ff13"
+    key_name: "sd2pers-key"
+    public_subnet_id: subnet-002e550eda02bff3f
+    security_group: ssh-from-anywhere
+
+  tasks:
+
+    - name: provision a set of instances
+      ec2:
+        key_name: "{{ key_name }}"
+#        group: test
+        vpc_subnet_id: "{{ public_subnet_id }}"
+        group: "{{ security_group }}"
+        region: us-east-1
+        instance_type: t2.small
+        image: "{{ instance_type }}"
+        assign_public_ip: yes
+        wait: true
+#        exact_count: 1
+#        count_tag:
+#          Name: sdunne-demo
+        instance_tags:
+          Name: sdunne-demo1
+      register: ec2

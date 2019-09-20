@@ -1,27 +1,26 @@
 ---
-- name: install apache web server with content
-  hosts: servers
+- hosts: all
+  name: This is a play within a playbook
   become: yes
   vars:
-    apache_test_message: Hello KSC
+    httpd_packages:
+      - httpd
+      - mod_wsgi
+    apache_test_message: Hello FAA
     apache_max_keep_alive_requests: 115
 
   tasks:
-    - name: install apache
-      yum:
-        name: httpd
+    - name: httpd packages are present
+      package:
+        name: "{{ item }}"
         state: present
+      loop: "{{ httpd_packages }}"
+      notify: restart apache service
 
-    - name: install firewalld
-      yum:
-        name: firewalld
-        state: present
-
-    - name: start and enable firewalld
-      service:
-        name: firewalld
-        state: started
-        enabled: yes
+    - name: site-enabled directory is present
+      file:
+        name: /etc/httpd/conf/sites-enabled
+        state: directory
 
     - name: latest httpd.conf is present
       template:
@@ -40,12 +39,13 @@
         state: started
         enabled: yes
 
-    - name: firewall port for http are open
+    - name: open ports in firewall
       firewalld:
         service: http
         immediate: true
         permanent: true
         state: enabled
+      tags: firewall
 
   handlers:
     - name: restart apache service
@@ -53,4 +53,3 @@
         name: httpd
         state: restarted
         enabled: yes
-

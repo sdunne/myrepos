@@ -1,0 +1,33 @@
+---
+- name: tag instances that are cloud access
+  hosts: all
+  vars:
+    ansible_ssh_private_key_file: ~/.ssh/keys/sdunne3.pem
+
+  tasks:
+    - name: run command to view metadata
+      uri:
+        url: http://169.254.169.254/latest/dynamic/instance-identity/document
+        return_content: yes
+      register: content
+
+    - debug: 
+        var=content.json.billingProducts
+    - debug: 
+        var=content.json.instanceId
+
+- name: add tag
+  hosts: localhost
+  become: false
+  tasks:
+    - name: add ec2 tag if instance is Cloud Access
+      ec2_tag:
+        region: us-east-2
+        #resource: "{{items}}"
+        resource: i-0d9784ca593a0fc7c 
+        state: present
+        tags:
+          RedHatSub: cloud-access
+      #loop:
+       # - "{{content.json.instanceId}}"
+

@@ -1,0 +1,9 @@
+---
+- name: facts dump
+  hosts: all
+  tasks:
+    - name: print all facts
+      debug:
+        var: ansible_facts.default_ipv4
+
+

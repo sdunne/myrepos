@@ -1,0 +1,8 @@
+---
+- name: display free memory
+  hosts: localhost
+
+  tasks: 
+    - name: display free memory
+      debug:
+        msg: "The free memory on this system is {{ansible_facts.memfree_mb}}MB"
