@@ -1,0 +1,25 @@
+---
+- hosts: all
+  name: subscription-manager resgister and attach
+  become: yes
+
+  vars_files:
+   - secrets.yml
+
+  tasks:
+   - name: Same as above but subscribe to a specific pool by ID.
+     redhat_subscription:
+       state: present
+       username: "{{ rhsm_user }}" 
+       password: "{{ rhsm_passwd }}"
+       pool_ids: "{{ rhsm_pool }}"
+
+   - name: install useful packages
+     yum:
+       name: "{{ item }}"
+       state: present
+     loop:
+       - vim
+       - nc
+       - wget
+

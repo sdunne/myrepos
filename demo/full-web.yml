@@ -6,7 +6,7 @@
     httpd_packages:
       - httpd
       - mod_wsgi
-    apache_test_message: Hello FAA
+    apache_test_message: Hello NASA
     apache_max_keep_alive_requests: 115
 
   tasks:
